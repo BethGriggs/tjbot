@@ -39,6 +39,8 @@ var tjConfig = {
 // instantiate our TJBot!
 var tj = new TJBot(hardware, tjConfig, credentials);
 
+console.log(tj.configuration);
+
 console.log("You can ask me to introduce myself or tell you a joke.");
 console.log("Try saying, \"" + tj.configuration.robot.name + ", please introduce yourself\" or \"" + tj.configuration.robot.name + ", what can you do?\"");
 console.log("You can also say, \"" + tj.configuration.robot.name + ", tell me a joke!\"");
@@ -50,13 +52,13 @@ tj.listen(function(msg) {
     if (msg.toLowerCase().startsWith(tj.configuration.robot.name.toLowerCase())) {
         // remove our name from the message
         var turn = msg.toLowerCase().replace(tj.configuration.robot.name.toLowerCase(), "");
-        
+
         var utterance = msg.toLowerCase();
-        
+
         // send to the assistant service
         tj.converse(WORKSPACEID, utterance, function(response) {
             var spoken = false;
-            
+
             // check if an intent to control the bot was found
             if (response.object.intents != undefined) {
                 var intent = response.object.intents[0];
@@ -97,7 +99,7 @@ tj.listen(function(msg) {
                             } else {
                                 misunderstood = true;
                             }
-                            
+
                             if (misunderstood == true) {
                                 tj.speak("I'm sorry, I didn't understand your color");
                                 spoken = true;
@@ -129,7 +131,7 @@ tj.listen(function(msg) {
                         }
                     }
                 }
-            
+
                 // if we didn't speak a response yet, speak it now
                 if (spoken == false) {
                     tj.speak(response.description);
