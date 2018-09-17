@@ -35,8 +35,8 @@ var tjConfig = {
         level: 'verbose'
     },
     speak: {
-        language: 'pt-BR',
-        voice: 'pt-BR_IsabelaVoice',
+        language: 'en-GB',
+        voice: 'en-GB_KateVoice',
         speakerDeviceId: 'plughw:0,0'
     }
 };
