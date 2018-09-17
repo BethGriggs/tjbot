@@ -44,7 +44,7 @@ var tjConfig = {
 // instantiate our TJBot!
 var tj = new TJBot(hardware, tjConfig, credentials);
 
-console.log(tj.configuration);
+tj.speak("This is my voice")
 
 console.log("You can ask me to introduce myself or tell you a joke.");
 console.log("Try saying, \"" + tj.configuration.robot.name + ", please introduce yourself\" or \"" + tj.configuration.robot.name + ", what can you do?\"");
