@@ -33,6 +33,11 @@ if (config.hasCamera == false) {
 var tjConfig = {
     log: {
         level: 'verbose'
+    },
+    speak: {
+        language: 'en-US',
+        voice: undefined,
+        speakerDeviceId: 'plughw:0,0'
     }
 };
 
