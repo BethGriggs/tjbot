@@ -64,7 +64,10 @@ function getSaying() {
   });
 }
 
-setInterval(getSaying, 5000);
+getSaying();
+
+const frequency = 1000 * 60 * 2 // Milliseconds * Seconds * Minutes
+setInterval(getSaying, frequency);
 
 function getRandomSaying() {
   const sayingTypes = Object.keys(sayings);

@@ -50,10 +50,13 @@
   ],
   "jokes": [
     "Why was the JavaScript developer sad? Because he didn't Node how to Express himself",
-    "Hold up"
+    "Hold up",
+		"Want to grab some Java?"
   ],
   "activity": [
-    "Tom just closed an issue!",
-    "Only 3 tasks left for this sprint!"
+    "Tom just closed an issue! Time to play table football!",
+    "Only 3 tasks left for this sprint!",
+		"5 out of 8 tasks this sprint are completed!",
+		"There are 2 PRs waiting for review"
   ]
 }
