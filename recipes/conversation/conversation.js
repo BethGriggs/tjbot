@@ -37,18 +37,10 @@ const tj = new TJBot(hardware, tjConfig, credentials);
 // Twitter
 const Twitter = require('twitter');
 
-const twitter = new Twitter({
-  consumer_key: "",
-  consumer_secret: "",
-  access_token_key: "",
-  access_token_secret: ""
-});
+const twitterClient = new Twitter(config.twitter);
 
-const tinyCareBotId = "797869498757955589";
-
-let since_id = "";
-let params = {
-  "user_id": tinyCareBotId,
+const params = {
+  "user_id": "797869498757955589", // @tinycarebot user_id
   "count": 1,
   "exclude_replies": true
 }
@@ -56,7 +48,7 @@ let params = {
 function getSaying() {
   let twitterSpeak = false;
 
-  twitter.get('statuses/user_timeline', params, function(err, tweets, response) {
+  twitterClient.get('statuses/user_timeline', params, function(err, tweets, response) {
     if (!err && tweets.length > 0) {
       params.since_id = tweets[0].id;
       twitterSpeak = true;
@@ -65,10 +57,7 @@ function getSaying() {
     }
 
     if (!twitterSpeak) {
-      const sayingTypes = Object.keys(sayings);
-      let type = Math.floor(Math.random() * Object.keys(sayings).length);
-
-      let saying = sayings[sayingTypes[type]][Math.floor(Math.random() * Object.keys(sayings[sayingTypes[type]]).length)];
+      const saying = getRandomSaying();
       console.log(saying)
       //tj.speak(saying);
     }
@@ -76,3 +65,9 @@ function getSaying() {
 }
 
 setInterval(getSaying, 5000);
+
+function getRandomSaying() {
+  const sayingTypes = Object.keys(sayings);
+  const type = Math.floor(Math.random() * sayingTypes.length);
+  return sayings[sayingTypes[type]][Math.floor(Math.random() * Object.keys(sayings[sayingTypes[type]]).length)];
+}
