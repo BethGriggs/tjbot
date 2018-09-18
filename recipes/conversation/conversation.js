@@ -14,133 +14,67 @@
  * limitations under the License.
  */
 
-var TJBot = require('tjbot');
-var config = require('./config');
+const TJBot = require('tjbot');
+const config = require('./config');
+const sayings = require('./sayings.json');
 
 // obtain our credentials from config.js
-var credentials = config.credentials;
+const credentials = config.credentials;
 
-// obtain user-specific config
-var WORKSPACEID = config.workspaceId;
-
-// these are the hardware capabilities that TJ needs for this recipe
-var hardware = ['microphone', 'speaker', 'led', 'servo', 'camera'];
-if (config.hasCamera == false) {
-    hardware = ['microphone', 'speaker', 'led', 'servo'];
-}
+// hardware capabilities that TJ needs for this recipe
+const hardware = ['speaker'];
 
 // set up TJBot's configuration
-var tjConfig = {
+const tjConfig = {
     log: {
         level: 'verbose'
-    },
-    speak: {
-        language: 'en-US',
-        voice: undefined,
-        speakerDeviceId: 'plughw:0,0'
     }
 };
 
 // instantiate our TJBot!
-var tj = new TJBot(hardware, tjConfig, credentials);
+const tj = new TJBot(hardware, tjConfig, credentials);
 
-tj.speak("This is my voice")
+// Twitter
+const Twitter = require('twitter');
 
-console.log("You can ask me to introduce myself or tell you a joke.");
-console.log("Try saying, \"" + tj.configuration.robot.name + ", please introduce yourself\" or \"" + tj.configuration.robot.name + ", what can you do?\"");
-console.log("You can also say, \"" + tj.configuration.robot.name + ", tell me a joke!\"");
-
-// listen for utterances with our attentionWord and send the result to
-// the Assistant service
-tj.listen(function(msg) {
-    // check to see if they are talking to TJBot
-    if (msg.toLowerCase().startsWith(tj.configuration.robot.name.toLowerCase())) {
-        // remove our name from the message
-        var turn = msg.toLowerCase().replace(tj.configuration.robot.name.toLowerCase(), "");
-
-        var utterance = msg.toLowerCase();
-
-        // send to the assistant service
-        tj.converse(WORKSPACEID, utterance, function(response) {
-            var spoken = false;
-
-            // check if an intent to control the bot was found
-            if (response.object.intents != undefined) {
-                var intent = response.object.intents[0];
-                if (intent != undefined && intent.intent != undefined) {
-                    switch (intent.intent) {
-                        case "lower-arm":
-                            tj.speak(response.description);
-                            tj.lowerArm();
-                            spoken = true;
-                            break;
-                        case "raise-arm":
-                            tj.speak(response.description);
-                            tj.raiseArm();
-                            spoken = true;
-                            break;
-                        case "wave":
-                            tj.speak(response.description);
-                            tj.wave();
-                            spoken = true;
-                            break;
-                        case "greeting":
-                            tj.speak(response.description);
-                            tj.wave();
-                            spoken = true;
-                            break;
-                        case "shine":
-                            var misunderstood = false;
-                            if (response.object.entities != undefined) {
-                                var entity = response.object.entities[0];
-                                if (entity != undefined && entity.value != undefined) {
-                                    var color = entity.value;
-                                    tj.speak(response.description);
-                                    tj.shine(color);
-                                    spoken = true;
-                                } else {
-                                    misunderstood = true;
-                                }
-                            } else {
-                                misunderstood = true;
-                            }
-
-                            if (misunderstood == true) {
-                                tj.speak("I'm sorry, I didn't understand your color");
-                                spoken = true;
-                            }
-                            break;
-                        case "see":
-                            if (config.hasCamera == false) {
-                                tj.speak("I'm sorry, I don't have a camera so I can't see anything");
-                                spoken = true;
-                            } else {
-                                tj.speak(response.description);
-                                tj.see().then(function(objects) {
-                                    if (objects.length == 0) {
-                                        tj.speak("I'm not sure I see anything");
-                                    } else if (objects.length == 1) {
-                                        var object = objects[0].class;
-                                        tj.speak("I see " + object);
-                                    } else if (objects.length == 2) {
-                                        var objects = objects[0].class + " and " + objects[1].class;
-                                        tj.speak("I'm looking at " + objects);
-                                    } else {
-                                        var objects = objects[0].class + ", " + objects[1].class + ", and " + objects[2].class + ", and a few other things too";
-                                        tj.speak("I'm looking at " + objects);
-                                    }
-                                });
-                                spoken = true;
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                // if we didn't speak a response yet, speak it now
-                if (spoken == false) {
-                    tj.speak(response.description);
-                }
-        });
-    }
+const twitter = new Twitter({
+  consumer_key: "",
+  consumer_secret: "",
+  access_token_key: "",
+  access_token_secret: ""
 });
+
+const tinyCareBotId = "797869498757955589";
+
+let since_id = "";
+let params = {
+      "user_id": tinyCareBotId,
+      "count": 1, 
+      "exclude_replies": true
+    }
+
+function getSaying() {
+  let twitterSpeak = false; 
+
+  twitter.get('statuses/user_timeline', params, function(err, tweets, response) {
+      if (!err && tweets.length > 0) {
+        params.since_id = tweets[0].id;
+	twitterSpeak = true;
+        console.log(tweets[0].text.split(':')[1].trim());
+        //tj.speak(tweets[0].text.split(':')[1].trim());
+      }
+
+   if (!twitterSpeak){
+        const sayingTypes = Object.keys(sayings);
+	let type = Math.floor(Math.random() * Object.keys(sayings).length);
+       
+        let saying = sayings[sayingTypes[type]][Math.floor(Math.random() * Object.keys(sayings[sayingTypes[type]]).length)];
+        console.log(saying)
+	//tj.speak(saying);
+	}
+   });	
+}
+
+setInterval(getSaying, 5000);
+
+
