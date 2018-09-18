@@ -26,9 +26,9 @@ const hardware = ['speaker'];
 
 // set up TJBot's configuration
 const tjConfig = {
-    log: {
-        level: 'verbose'
-    }
+  log: {
+    level: 'verbose'
+  }
 };
 
 // instantiate our TJBot!
@@ -48,33 +48,31 @@ const tinyCareBotId = "797869498757955589";
 
 let since_id = "";
 let params = {
-      "user_id": tinyCareBotId,
-      "count": 1, 
-      "exclude_replies": true
-    }
+  "user_id": tinyCareBotId,
+  "count": 1,
+  "exclude_replies": true
+}
 
 function getSaying() {
-  let twitterSpeak = false; 
+  let twitterSpeak = false;
 
   twitter.get('statuses/user_timeline', params, function(err, tweets, response) {
-      if (!err && tweets.length > 0) {
-        params.since_id = tweets[0].id;
-	twitterSpeak = true;
-        console.log(tweets[0].text.split(':')[1].trim());
-        //tj.speak(tweets[0].text.split(':')[1].trim());
-      }
+    if (!err && tweets.length > 0) {
+      params.since_id = tweets[0].id;
+      twitterSpeak = true;
+      console.log(tweets[0].text.split(':')[1].trim());
+      //tj.speak(tweets[0].text.split(':')[1].trim());
+    }
 
-   if (!twitterSpeak){
-        const sayingTypes = Object.keys(sayings);
-	let type = Math.floor(Math.random() * Object.keys(sayings).length);
-       
-        let saying = sayings[sayingTypes[type]][Math.floor(Math.random() * Object.keys(sayings[sayingTypes[type]]).length)];
-        console.log(saying)
-	//tj.speak(saying);
-	}
-   });	
+    if (!twitterSpeak) {
+      const sayingTypes = Object.keys(sayings);
+      let type = Math.floor(Math.random() * Object.keys(sayings).length);
+
+      let saying = sayings[sayingTypes[type]][Math.floor(Math.random() * Object.keys(sayings[sayingTypes[type]]).length)];
+      console.log(saying)
+      //tj.speak(saying);
+    }
+  });
 }
 
 setInterval(getSaying, 5000);
-
-
