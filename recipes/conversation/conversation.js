@@ -24,6 +24,9 @@ const credentials = config.credentials;
 // hardware capabilities that TJ needs for this recipe
 const hardware = ['speaker'];
 
+// set up TJBot's configuration
+const tjConfig = {};
+
 // instantiate our TJBot!
 const tj = new TJBot(hardware, tjConfig, credentials);
 
