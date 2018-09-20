@@ -24,13 +24,6 @@ const credentials = config.credentials;
 // hardware capabilities that TJ needs for this recipe
 const hardware = ['speaker'];
 
-// set up TJBot's configuration
-const tjConfig = {
-  log: {
-    level: 'verbose'
-  }
-};
-
 // instantiate our TJBot!
 const tj = new TJBot(hardware, tjConfig, credentials);
 
@@ -53,13 +46,13 @@ function getSaying() {
       params.since_id = tweets[0].id;
       twitterSpeak = true;
       console.log(tweets[0].text.split(':')[1].trim());
-      //tj.speak(tweets[0].text.split(':')[1].trim());
+      tj.speak(tweets[0].text.split(':')[1].trim());
     }
 
     if (!twitterSpeak) {
       const saying = getRandomSaying();
       console.log(saying)
-      //tj.speak(saying);
+      tj.speak(saying);
     }
   });
 }
